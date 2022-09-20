@@ -5,9 +5,15 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  Button,
+  Linking,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
+import {
+  heightPercentageToDP,
+  widthPercentageToDP,
+} from 'react-native-responsive-screen';
 
 export const SLIDER_WIDTH = Dimensions.get('window').width + 80;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
@@ -33,34 +39,59 @@ export default function NewsFeed() {
           source={{uri: `${item.urlToImage}`}}
           style={styles.imageContainer}
         />
+        <Text style={styles.descriptionTxt}>{item.description}</Text>
+        <Text
+          style={styles.hyperlinkStyle}
+          onPress={() => {
+            Linking.openURL(`${item.url}`);
+          }}>
+          Read More
+        </Text>
       </View>
     );
   };
   return (
-    <View>
-      <FlatList
-        data={articles}
-        renderItem={item => renderItem(item)}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        pagingEnabled
-        bounces={false}
-      />
-    </View>
+    <FlatList
+      style={styles.container}
+      data={articles}
+      renderItem={item => renderItem(item)}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      pagingEnabled
+      bounces={false}
+    />
   );
 }
 
 const styles = StyleSheet.create({
+  container: {},
   feedContainer: {
     borderWidth: 0.5,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
+    paddingVertical: 10,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
   titleTxt: {
     fontSize: 20,
+    fontWeight: '400',
+    color: '#023047',
+    width: widthPercentageToDP(100),
+    textAlign: 'justify',
+    marginVertical: 10,
   },
   imageContainer: {
-    width: 400,
-    height: 500,
+    width: widthPercentageToDP(80),
+    height: heightPercentageToDP(40),
+  },
+  descriptionTxt: {
+    width: widthPercentageToDP(100),
+    textAlign: 'justify',
+    marginVertical: 10,
+    fontSize: 16,
+    color: 'black',
+  },
+  hyperlinkStyle: {
+    color: 'blue',
+    fontSize: 16,
   },
 });

@@ -2,22 +2,39 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
-  TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
+import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
 
 export default function Login({navigation}: any) {
+
+	useEffect(()=>{
+		GoogleSignin.configure({
+			webClientId: '',
+		  });
+	},[])
+
+	async function onGoogleButtonPress() {
+		// Get the users ID token
+		const { idToken } = await GoogleSignin.signIn();
+	  
+		// Create a Google credential with the token
+		const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+	  
+		// Sign-in the user with the credential
+		return auth().signInWithCredential(googleCredential);
+	  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.titleContainer}>SIGN IN</Text>
-      <TextInput style={styles.inputContainer} placeholder="Email" />
-      <TextInput style={styles.inputContainer} placeholder="Password" />
-      <TouchableOpacity
-        onPress={() => navigation.navigate('NewsFeed')}
-        style={styles.btnContainer}>
-        <Text style={styles.btnTxt}>Sign In</Text>
-      </TouchableOpacity>
+      <GoogleSigninButton
+        style={{width: 192, height: 48}}
+        size={GoogleSigninButton.Size.Wide}
+        color={GoogleSigninButton.Color.Dark}
+		onPress={() => onGoogleButtonPress().then(() => console.log('Signed in with Google!'))}
+    />
     </View>
   );
 }
